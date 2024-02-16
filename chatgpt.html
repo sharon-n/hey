@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot with OpenAI API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chat-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #messages {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <input type="text" id="user-input" placeholder="Type your message...">
+    </div>
+
+    <!-- Your existing HTML code -->
+
+<script>
+    document.getElementById('user-input').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            const userMessage = this.value.trim();
+            if (userMessage !== '') {
+                appendMessage('You: ' + userMessage);
+                getChatGPTResponse(userMessage);
+                this.value = '';
+            }
+        }
+    });
+
+    async function getChatGPTResponse(userMessage) {
+        try {
+            const response = await fetch('http://localhost:3000/getChatGPTResponse', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userMessage,
+                }),
+            });
+
+            const responseData = await response.json();
+            const chatGPTResponse = responseData.chatGPTResponse;
+            appendMessage(`ChatGPT: ${chatGPTResponse}`);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+</script>
+
+</body>
+</html>
